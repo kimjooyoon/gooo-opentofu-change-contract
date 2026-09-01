@@ -1,0 +1,35 @@
+{
+  "schema": "gooo/opentofu-change-contract/resource-service-map/v1",
+  "version": 1,
+  "scope": "FIXTURE_ONLY",
+  "mappings": [
+    {
+      "resource_address": "aws_dynamodb_table.orders",
+      "service": "orders-api",
+      "contract": "orders-read-contract",
+      "capability": "orders.read",
+      "operation": {"method": "GET", "path": "/v1/orders", "operation_id": "listOrders"},
+      "user_path": "checkout/orders",
+      "explicit": true
+    },
+    {
+      "resource_address": "aws_lambda_function.orders_api",
+      "service": "orders-api",
+      "contract": "orders-write-contract",
+      "capability": "orders.write",
+      "operation": {"method": "POST", "path": "/v1/orders", "operation_id": "createOrder"},
+      "user_path": "checkout/orders/create",
+      "explicit": true
+    },
+    {
+      "resource_address": "aws_s3_bucket.receipts",
+      "service": "receipts-api",
+      "contract": "receipt-download-contract",
+      "capability": "receipts.read",
+      "operation": {"method": "GET", "path": "/v1/receipts/{id}", "operation_id": "downloadReceipt"},
+      "user_path": "checkout/receipt-download",
+      "explicit": true
+    }
+  ]
+}
+

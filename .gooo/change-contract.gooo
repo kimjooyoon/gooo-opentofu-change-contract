@@ -1,0 +1,66 @@
+package changecontract
+namespace gooo.opentofu.changecontract
+
+entity PinnedOpenTofuPlan id "gooo://change-contract/input/pinned-opentofu-plan"
+entity PinnedOpenAPIDocument id "gooo://change-contract/input/pinned-openapi"
+entity ExplicitResourceServiceMapping id "gooo://change-contract/input/resource-service-map"
+entity ChangeContractArtifact id "gooo://change-contract/output/change-contract"
+entity ImpactEventsArtifact id "gooo://change-contract/output/impact-events"
+entity ResourceServiceMapArtifact id "gooo://change-contract/output/resource-service-map"
+entity UnknownFrontierArtifact id "gooo://change-contract/output/unknown-frontier"
+entity DecisionReceiptArtifact id "gooo://change-contract/output/decision-receipt"
+entity ReplayReceiptArtifact id "gooo://change-contract/output/replay-receipt"
+entity ReportArtifact id "gooo://change-contract/output/report"
+
+scope name=FIXTURE_ONLY repository_writes=0 input_mutations=0 opentofu_invocations=0 terraform_invocations=0 network_provider_invocations=0
+
+// @output name=change-contract.json kind=CHANGE_CONTRACT
+// @output name=impact-events.ndjson kind=IMPACT_EVENTS
+// @output name=resource-service-map.json kind=RESOURCE_SERVICE_MAP
+// @output name=unknown-frontier.json kind=UNKNOWN_FRONTIER
+// @output name=decision-receipt.json kind=DECISION_RECEIPT
+// @output name=replay-receipt.json kind=REPLAY_RECEIPT
+// @output name=report.md kind=REPORT
+
+// @activity id=gooo.activity.change-contract.read-plan name=ReadPinnedOpenTofuPlan stage=INPUT step=READ_PINNED_PLAN
+// @activity id=gooo.activity.change-contract.read-openapi name=ReadPinnedOpenAPIDocument stage=INPUT step=READ_PINNED_OPENAPI
+// @activity id=gooo.activity.change-contract.read-map name=ReadExplicitResourceServiceMapping stage=INPUT step=READ_EXPLICIT_MAPPING
+// @activity id=gooo.activity.change-contract.resource-semantics name=EvaluateResourceChangeSemantics stage=SEMANTICS step=CLASSIFY_RESOURCE_CHANGE
+// @activity id=gooo.activity.change-contract.contract-relation name=RelateContractToOpenAPIOperation stage=RELATION step=RESOLVE_SERVICE_CONTRACT
+// @activity id=gooo.activity.change-contract.impact-propagation name=PropagateImpactAcrossDependencies stage=PROPAGATION step=PROPAGATE_DEPENDENCY_IMPACT
+// @activity id=gooo.activity.change-contract.unknown-frontier name=PreserveUnknownCausalFrontier stage=UNKNOWN step=PRESERVE_UNKNOWN_FRONTIER
+// @activity id=gooo.activity.change-contract.refute-contradiction name=RefuteContradictoryEvidence stage=REFUTATION step=REFUTE_CONTRADICTION
+// @activity id=gooo.activity.change-contract.generate-outputs name=GenerateChangeContractOutputs stage=OUTPUT step=GENERATE_SEVEN_OUTPUTS
+// @activity id=gooo.activity.change-contract.replay name=VerifyDeterministicReplay stage=REPLAY step=COMPARE_REPLAY_BYTES
+
+// @action name=create semantics=ADDITIVE
+// @action name=update semantics=MODIFICATION
+// @action name=delete semantics=DESTRUCTIVE
+
+// @case id=mapped-additive state=CLOSED kind=MAPPED action=create
+// @case id=mapped-update state=CLOSED kind=MAPPED action=update
+// @case id=mapped-delete state=CLOSED kind=MAPPED action=delete
+// @case id=missing-mapping state=UNKNOWN kind=MISSING_MAPPING
+// @case id=stale-plan-schema state=UNKNOWN kind=STALE_INPUT
+// @case id=ambiguous-address state=UNKNOWN kind=AMBIGUOUS_ADDRESS
+// @case id=digest-contradiction state=REFUTED kind=DIGEST_CONTRADICTION
+// @case id=ignored-destructive-dependency state=REFUTED kind=IGNORED_DESTRUCTIVE_DEPENDENCY
+// @case id=scope-escalation state=REFUTED kind=SCOPE_ESCALATION
+
+// @relation from=resource-change to=resource-service-map predicate=explicitly-mapped
+// @relation from=resource-service-map to=openapi-operation predicate=contract-relation
+// @relation from=resource-change to=dependent-resource predicate=dependency-impact
+// @relation from=missing-evidence to=unknown-frontier predicate=causal-frontier
+// @relation from=contradictory-evidence to=decision predicate=refuted-precedence
+
+activity ReadPinnedOpenTofuPlan(PinnedOpenTofuPlan) -> PinnedOpenTofuPlan
+activity ReadPinnedOpenAPIDocument(PinnedOpenAPIDocument) -> PinnedOpenAPIDocument
+activity ReadExplicitResourceServiceMapping(ExplicitResourceServiceMapping) -> ExplicitResourceServiceMapping
+activity EvaluateResourceChangeSemantics(PinnedOpenTofuPlan) -> ChangeContractArtifact
+activity RelateContractToOpenAPIOperation(ExplicitResourceServiceMapping, PinnedOpenAPIDocument) -> ChangeContractArtifact
+activity PropagateImpactAcrossDependencies(ChangeContractArtifact) -> ImpactEventsArtifact
+activity PreserveUnknownCausalFrontier(ChangeContractArtifact) -> UnknownFrontierArtifact
+activity RefuteContradictoryEvidence(ChangeContractArtifact) -> DecisionReceiptArtifact
+activity GenerateChangeContractOutputs(ChangeContractArtifact) -> ReportArtifact
+activity VerifyDeterministicReplay(ChangeContractArtifact) -> ReplayReceiptArtifact
+

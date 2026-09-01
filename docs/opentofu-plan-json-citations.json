@@ -1,0 +1,36 @@
+{
+  "schema": "gooo/opentofu-change-contract/pinned-citations/v1",
+  "retrieved_at": "2026-09-01",
+  "sources": [
+    {
+      "id": "opentofu-json-output-format",
+      "kind": "PRIMARY_OFFICIAL",
+      "url": "https://opentofu.org/docs/internals/json-format/",
+      "claims": [
+        "plan JSON has format_version and resource_changes",
+        "resource_changes identify an opaque address and change actions",
+        "configuration and planned_values are plan representation sections"
+      ]
+    },
+    {
+      "id": "opentofu-machine-readable-ui",
+      "kind": "PRIMARY_OFFICIAL",
+      "url": "https://opentofu.org/docs/internals/machine-readable-ui/",
+      "claims": ["machine-readable output is an observation boundary, not a service semantic mapping"]
+    },
+    {
+      "id": "opentofu-show-json",
+      "kind": "PRIMARY_OFFICIAL",
+      "url": "https://opentofu.org/docs/cli/commands/show/",
+      "claims": ["show -json emits a JSON representation of a plan or state file"]
+    }
+  ],
+  "consumer_rules": {
+    "supported_format_major": 1,
+    "unknown_minor_fields": "ignored",
+    "unsupported_major": "UNKNOWN",
+    "terraform_version_semantics": "not_used_for_engine_identity",
+    "engine_identity_source": "explicit_gooo_pin.engine"
+  }
+}
+

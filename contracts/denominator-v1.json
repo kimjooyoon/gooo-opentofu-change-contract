@@ -1,0 +1,31 @@
+{
+  "schema": "gooo/opentofu-change-contract/denominator/v1",
+  "version": 1,
+  "target_activities": 10,
+  "activities": [
+    {"ordinal": 1, "id": "gooo.activity.change-contract.read-plan", "activity": "ReadPinnedOpenTofuPlan", "stage": "INPUT", "step": "READ_PINNED_PLAN"},
+    {"ordinal": 2, "id": "gooo.activity.change-contract.read-openapi", "activity": "ReadPinnedOpenAPIDocument", "stage": "INPUT", "step": "READ_PINNED_OPENAPI"},
+    {"ordinal": 3, "id": "gooo.activity.change-contract.read-map", "activity": "ReadExplicitResourceServiceMapping", "stage": "INPUT", "step": "READ_EXPLICIT_MAPPING"},
+    {"ordinal": 4, "id": "gooo.activity.change-contract.resource-semantics", "activity": "EvaluateResourceChangeSemantics", "stage": "SEMANTICS", "step": "CLASSIFY_RESOURCE_CHANGE"},
+    {"ordinal": 5, "id": "gooo.activity.change-contract.contract-relation", "activity": "RelateContractToOpenAPIOperation", "stage": "RELATION", "step": "RESOLVE_SERVICE_CONTRACT"},
+    {"ordinal": 6, "id": "gooo.activity.change-contract.impact-propagation", "activity": "PropagateImpactAcrossDependencies", "stage": "PROPAGATION", "step": "PROPAGATE_DEPENDENCY_IMPACT"},
+    {"ordinal": 7, "id": "gooo.activity.change-contract.unknown-frontier", "activity": "PreserveUnknownCausalFrontier", "stage": "UNKNOWN", "step": "PRESERVE_UNKNOWN_FRONTIER"},
+    {"ordinal": 8, "id": "gooo.activity.change-contract.refute-contradiction", "activity": "RefuteContradictoryEvidence", "stage": "REFUTATION", "step": "REFUTE_CONTRADICTION"},
+    {"ordinal": 9, "id": "gooo.activity.change-contract.generate-outputs", "activity": "GenerateChangeContractOutputs", "stage": "OUTPUT", "step": "GENERATE_SEVEN_OUTPUTS"},
+    {"ordinal": 10, "id": "gooo.activity.change-contract.replay", "activity": "VerifyDeterministicReplay", "stage": "REPLAY", "step": "COMPARE_REPLAY_BYTES"}
+  ],
+  "states": ["CLOSED", "UNKNOWN", "REFUTED"],
+  "precedence": ["REFUTED", "UNKNOWN", "CLOSED"],
+  "canonical_case_count": 9,
+  "canonical_case_state_counts": {"CLOSED": 3, "UNKNOWN": 3, "REFUTED": 3},
+  "outputs": [
+    "change-contract.json",
+    "impact-events.ndjson",
+    "resource-service-map.json",
+    "unknown-frontier.json",
+    "decision-receipt.json",
+    "replay-receipt.json",
+    "report.md"
+  ]
+}
+

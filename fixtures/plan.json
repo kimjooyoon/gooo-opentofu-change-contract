@@ -1,0 +1,46 @@
+{
+  "format_version": "1.0",
+  "terraform_version": "1.8.5",
+  "gooo_pin": {
+    "engine": "OPENTOFU",
+    "release": "v1.10.0",
+    "scope": "FIXTURE_ONLY",
+    "source_kind": "PINNED_PLAN_JSON"
+  },
+  "prior_state": {},
+  "planned_values": {},
+  "configuration": {
+    "root_module": {
+      "resources": [
+        {"address": "aws_dynamodb_table.orders", "mode": "managed", "type": "aws_dynamodb_table", "name": "orders", "depends_on": []},
+        {"address": "aws_lambda_function.orders_api", "mode": "managed", "type": "aws_lambda_function", "name": "orders_api", "depends_on": ["aws_dynamodb_table.orders"]},
+        {"address": "aws_s3_bucket.receipts", "mode": "managed", "type": "aws_s3_bucket", "name": "receipts", "depends_on": []}
+      ]
+    }
+  },
+  "resource_changes": [
+    {
+      "address": "aws_dynamodb_table.orders",
+      "mode": "managed",
+      "type": "aws_dynamodb_table",
+      "name": "orders",
+      "change": {"actions": ["create"], "before": null, "after": {"name": "orders"}, "after_unknown": {}, "before_sensitive": false, "after_sensitive": false}
+    },
+    {
+      "address": "aws_lambda_function.orders_api",
+      "mode": "managed",
+      "type": "aws_lambda_function",
+      "name": "orders_api",
+      "change": {"actions": ["update"], "before": {"runtime": "go1.x"}, "after": {"runtime": "provided.al2023"}, "after_unknown": {}, "before_sensitive": false, "after_sensitive": false}
+    },
+    {
+      "address": "aws_s3_bucket.receipts",
+      "mode": "managed",
+      "type": "aws_s3_bucket",
+      "name": "receipts",
+      "change": {"actions": ["delete"], "before": {"name": "receipts"}, "after": null, "after_unknown": {}, "before_sensitive": false, "after_sensitive": false}
+    }
+  ],
+  "errored": false
+}
+
