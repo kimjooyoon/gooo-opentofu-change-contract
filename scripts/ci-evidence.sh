@@ -23,6 +23,10 @@ measure() {
   test -n "$rss"
   jq -n --arg name "$name" --argjson wall_ms "$wall_ms" --argjson peak_rss_kib "$rss" --argjson exit_code "$status" \
     '{name:$name,wall_ms:$wall_ms,peak_rss_kib:$peak_rss_kib,exit_code:$exit_code}' > "$work/measurements/$name.json"
+  if [ "$status" -ne 0 ]; then
+    echo "ci-evidence phase failed: $name (exit=$status)" >&2
+    sed -n '1,240p' "$output_file" >&2
+  fi
   return "$status"
 }
 
@@ -45,4 +49,3 @@ jq -s --arg subject "${GITHUB_SHA:-UNKNOWN}" --arg workflow "${GITHUB_WORKFLOW:-
    tests:{total:9,selected:9,executed:9,reused:0,failed:0,unknown:0}}
 ' $measurements > "$work/ci-evidence.json"
 cat "$work/ci-evidence.json" >> "$GITHUB_STEP_SUMMARY"
-
