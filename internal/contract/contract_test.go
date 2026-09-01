@@ -15,7 +15,6 @@ func TestSchemaOwnsFixedDenominator(t *testing.T) {
 		t.Fatalf("unexpected .gooo denominator: activities=%d cases=%d outputs=%d", len(schema.Activities), len(schema.Cases), len(schema.Outputs))
 	}
 }
-
 func testBundle(t *testing.T) Bundle {
 	t.Helper()
 	bundle, err := LoadBundle("../../.gooo/change-contract.gooo", "../../fixtures/plan.json", "../../fixtures/openapi.json", "../../fixtures/resource-service-map.json", "../../contracts/input-lock-v1.json")
@@ -99,4 +98,3 @@ func TestRenderIsExactlySevenOutputsAndReplayStable(t *testing.T) {
 		}
 	}
 }
-

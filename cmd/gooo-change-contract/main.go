@@ -41,9 +41,7 @@ func main() {
 		fail(fmt.Errorf("default mapped-additive case did not close"))
 	}
 }
-
 func fail(err error) {
 	_, _ = fmt.Fprintln(os.Stderr, "gooo-change-contract:", err)
 	os.Exit(1)
 }
-

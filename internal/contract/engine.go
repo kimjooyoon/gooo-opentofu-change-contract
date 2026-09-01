@@ -12,12 +12,12 @@ import (
 )
 
 type Bundle struct {
-	Schema   Schema
-	Plan     Plan
-	OpenAPI  OpenAPI
-	Mapping  MappingFile
-	Lock     InputLock
-	Digests  InputDigests
+	Schema  Schema
+	Plan    Plan
+	OpenAPI OpenAPI
+	Mapping MappingFile
+	Lock    InputLock
+	Digests InputDigests
 }
 
 func DigestFile(path string) (string, error) {
@@ -270,18 +270,18 @@ func buildImpacts(bundle Bundle, schema Schema, mappings []Mapping, ignoreDestru
 			}
 		}
 		impact := ImpactEvent{
-			Sequence: sequence + 1,
+			Sequence:        sequence + 1,
 			ResourceAddress: address,
-			Action: actions[address],
-			Semantics: semantics[actions[address]],
-			Service: resource.Service,
-			Contract: resource.Contract,
-			Capability: resource.Capability,
-			Operation: resource.Operation,
-			UserPath: resource.UserPath,
-			CausalFrontier: frontier,
-			State: Closed,
-			ActivityID: activityID(schema, "PropagateImpactAcrossDependencies"),
+			Action:          actions[address],
+			Semantics:       semantics[actions[address]],
+			Service:         resource.Service,
+			Contract:        resource.Contract,
+			Capability:      resource.Capability,
+			Operation:       resource.Operation,
+			UserPath:        resource.UserPath,
+			CausalFrontier:  frontier,
+			State:           Closed,
+			ActivityID:      activityID(schema, "PropagateImpactAcrossDependencies"),
 		}
 		if !operationExists(bundle.OpenAPI, resource.Operation) {
 			return nil, dependencies, fmt.Errorf("mapping operation is not present in pinned OpenAPI: %s", address)
@@ -290,7 +290,6 @@ func buildImpacts(bundle Bundle, schema Schema, mappings []Mapping, ignoreDestru
 	}
 	return impacts, dependencies, nil
 }
-
 func unknownClaim(schema Schema, stage, step, reason, class, next string, blocked []string) UnknownClaim {
 	return UnknownClaim{State: Unknown, Stage: stage, Step: step, Reason: reason, UnknownClass: class, NextOperation: next, BlockedBy: blocked}
 }
@@ -399,4 +398,3 @@ func Evaluate(bundle Bundle, caseID string) (Evaluation, error) {
 	}
 	return evaluation, nil
 }
-

@@ -19,7 +19,6 @@ func parseFields(text string) map[string]string {
 	}
 	return fields
 }
-
 func ParseSchema(path string) (Schema, error) {
 	file, err := os.Open(path)
 	if err != nil {
@@ -153,4 +152,3 @@ func ReadJSON(path string, destination any) error {
 	}
 	return nil
 }
-

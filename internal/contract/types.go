@@ -36,27 +36,27 @@ type ActionSpec struct {
 }
 
 type CaseSpec struct {
-	ID    string
-	State string
-	Kind  string
+	ID     string
+	State  string
+	Kind   string
 	Action string
 }
 
 type RelationSpec struct {
-	From     string
-	To       string
+	From      string
+	To        string
 	Predicate string
 }
 
 type Schema struct {
-	Package   string
-	Namespace string
-	Scope     map[string]string
-	Outputs   []OutputSpec
+	Package    string
+	Namespace  string
+	Scope      map[string]string
+	Outputs    []OutputSpec
 	Activities []ActivitySpec
-	Actions   []ActionSpec
-	Cases     []CaseSpec
-	Relations []RelationSpec
+	Actions    []ActionSpec
+	Cases      []CaseSpec
+	Relations  []RelationSpec
 }
 
 type PlanPin struct {
@@ -67,12 +67,12 @@ type PlanPin struct {
 }
 
 type Plan struct {
-	FormatVersion    string       `json:"format_version"`
-	TerraformVersion string       `json:"terraform_version"`
-	GoooPin         PlanPin      `json:"gooo_pin"`
-	Configuration    Configuration `json:"configuration"`
+	FormatVersion    string          `json:"format_version"`
+	TerraformVersion string          `json:"terraform_version"`
+	GoooPin          PlanPin         `json:"gooo_pin"`
+	Configuration    Configuration   `json:"configuration"`
 	ResourceChanges  []ResourceChange `json:"resource_changes"`
-	Errored          bool         `json:"errored"`
+	Errored          bool            `json:"errored"`
 }
 
 type Configuration struct {
@@ -120,9 +120,9 @@ type Operation struct {
 }
 
 type OpenAPI struct {
-	OpenAPI string                     `json:"openapi"`
-	Info    map[string]any             `json:"info"`
-	Paths   map[string]map[string]any  `json:"paths"`
+	OpenAPI string                    `json:"openapi"`
+	Info    map[string]any            `json:"info"`
+	Paths   map[string]map[string]any `json:"paths"`
 }
 
 type UnknownClaim struct {
@@ -145,18 +145,18 @@ type Refutation struct {
 }
 
 type ImpactEvent struct {
-	Sequence       int      `json:"sequence"`
-	ResourceAddress string   `json:"resource_address"`
-	Action         string   `json:"action"`
-	Semantics      string   `json:"semantics"`
-	Service        string   `json:"service"`
-	Contract       string   `json:"contract"`
-	Capability     string   `json:"capability"`
-	Operation      Operation `json:"operation"`
-	UserPath       string   `json:"user_path"`
-	CausalFrontier []string `json:"causal_frontier"`
-	State          string   `json:"state"`
-	ActivityID     string   `json:"activity_id"`
+	Sequence        int       `json:"sequence"`
+	ResourceAddress string    `json:"resource_address"`
+	Action          string    `json:"action"`
+	Semantics       string    `json:"semantics"`
+	Service         string    `json:"service"`
+	Contract        string    `json:"contract"`
+	Capability      string    `json:"capability"`
+	Operation       Operation `json:"operation"`
+	UserPath        string    `json:"user_path"`
+	CausalFrontier  []string  `json:"causal_frontier"`
+	State           string    `json:"state"`
+	ActivityID      string    `json:"activity_id"`
 }
 
 type ActivityReceipt struct {
@@ -184,19 +184,19 @@ type InputLock struct {
 }
 
 type Evaluation struct {
-	Case              CaseSpec
-	Decision          string
-	Impacts           []ImpactEvent
-	Claims            []UnknownClaim
-	Refutations       []Refutation
-	Mappings          []Mapping
-	Dependencies      map[string][]string
-	TargetResource    string
-	InputDigests      InputDigests
-	ActivityReceipts  []ActivityReceipt
-	CanonicalCaseCounts map[string]int
-	Plan              Plan
-	OpenAPI           OpenAPI
+	Case                  CaseSpec
+	Decision              string
+	Impacts               []ImpactEvent
+	Claims                []UnknownClaim
+	Refutations           []Refutation
+	Mappings              []Mapping
+	Dependencies          map[string][]string
+	TargetResource        string
+	InputDigests          InputDigests
+	ActivityReceipts      []ActivityReceipt
+	CanonicalCaseCounts   map[string]int
+	Plan                  Plan
+	OpenAPI               OpenAPI
 }
 
 func (e Evaluation) MarshalPlan() ([]byte, error) {

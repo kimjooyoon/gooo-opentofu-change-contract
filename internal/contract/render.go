@@ -75,62 +75,62 @@ func decisionValue(evaluation Evaluation, schema Schema) map[string]any {
 		testsUnknown = 1
 	}
 	return map[string]any{
-		"schema": "gooo/opentofu-change-contract/decision-receipt/v1",
-		"version": 1,
-		"decision": evaluation.Decision,
-		"case_id": evaluation.Case.ID,
-		"precedence": []string{Refuted, Unknown, Closed},
+		"schema":                "gooo/opentofu-change-contract/decision-receipt/v1",
+		"version":               1,
+		"decision":              evaluation.Decision,
+		"case_id":               evaluation.Case.ID,
+		"precedence":            []string{Refuted, Unknown, Closed},
 		"canonical_case_counts": evaluation.CanonicalCaseCounts,
-		"input_digests": evaluation.InputDigests,
-		"activity_receipts": evaluation.ActivityReceipts,
+		"input_digests":         evaluation.InputDigests,
+		"activity_receipts":     evaluation.ActivityReceipts,
 		"active_unknown_claims": unknownViews(evaluation.Claims),
-		"refutations": refutationViews(evaluation.Refutations),
+		"refutations":           refutationViews(evaluation.Refutations),
 		"tests": map[string]int{
-			"total": 9,
+			"total":    9,
 			"selected": 1,
 			"executed": 1,
-			"reused": 0,
-			"failed": 0,
-			"unknown": testsUnknown,
+			"reused":   0,
+			"failed":   0,
+			"unknown":  testsUnknown,
 		},
 		"authority": map[string]any{
-			"scope": "FIXTURE_ONLY",
-			"input_read_only": true,
-			"repository_writes": 0,
-			"source_writes": 0,
-			"input_mutations": 0,
-			"opentofu_invocations": 0,
-			"terraform_invocations": 0,
-			"provider_network_invocations": 0,
-			"cross_project_required_gates": 0,
-			"engine_identity_source": "explicit_gooo_pin.engine",
+			"scope":                                      "FIXTURE_ONLY",
+			"input_read_only":                            true,
+			"repository_writes":                          0,
+			"source_writes":                              0,
+			"input_mutations":                            0,
+			"opentofu_invocations":                       0,
+			"terraform_invocations":                      0,
+			"provider_network_invocations":               0,
+			"cross_project_required_gates":               0,
+			"engine_identity_source":                     "explicit_gooo_pin.engine",
 			"terraform_version_used_for_engine_identity": false,
 		},
-		"output_names": append([]string(nil), OutputNames...),
+		"output_names":    append([]string(nil), OutputNames...),
 		"replay_required": true,
-		"semantic_owner": schema.Namespace,
+		"semantic_owner":  schema.Namespace,
 	}
 }
 
 func changeContractValue(evaluation Evaluation, schema Schema) map[string]any {
 	return map[string]any{
-		"schema": "gooo/opentofu-change-contract/change-contract/v1",
-		"version": 1,
-		"decision": evaluation.Decision,
-		"case_id": evaluation.Case.ID,
-		"input_digests": evaluation.InputDigests,
-		"plan_pin": evaluation.Plan.GoooPin,
-		"resource_changes": impactViews(evaluation.Impacts),
+		"schema":                  "gooo/opentofu-change-contract/change-contract/v1",
+		"version":                 1,
+		"decision":                evaluation.Decision,
+		"case_id":                 evaluation.Case.ID,
+		"input_digests":           evaluation.InputDigests,
+		"plan_pin":                evaluation.Plan.GoooPin,
+		"resource_changes":        impactViews(evaluation.Impacts),
 		"unknown_causal_frontier": unknownViews(evaluation.Claims),
-		"refutations": refutationViews(evaluation.Refutations),
-		"canonical_cases": canonicalCaseViews(schema),
-		"precedence": []string{Refuted, Unknown, Closed},
+		"refutations":             refutationViews(evaluation.Refutations),
+		"canonical_cases":         canonicalCaseViews(schema),
+		"precedence":              []string{Refuted, Unknown, Closed},
 		"authority": map[string]any{
-			"scope": "FIXTURE_ONLY",
-			"opentofu_invocations": 0,
-			"terraform_invocations": 0,
+			"scope":                        "FIXTURE_ONLY",
+			"opentofu_invocations":         0,
+			"terraform_invocations":        0,
 			"provider_network_invocations": 0,
-			"repository_writes": 0,
+			"repository_writes":            0,
 		},
 	}
 }
@@ -181,12 +181,12 @@ func renderCore(evaluation Evaluation, schema Schema) (OutputSet, error) {
 	}
 	report := []byte(reportText(evaluation, schema))
 	return OutputSet{
-		"change-contract.json": change,
-		"impact-events.ndjson": impact,
+		"change-contract.json":      change,
+		"impact-events.ndjson":      impact,
 		"resource-service-map.json": mapping,
-		"unknown-frontier.json": unknown,
-		"decision-receipt.json": decision,
-		"report.md": report,
+		"unknown-frontier.json":     unknown,
+		"decision-receipt.json":     decision,
+		"report.md":                 report,
 	}, nil
 }
 
@@ -202,18 +202,17 @@ func replayReceipt(first, second OutputSet, evaluation Evaluation) ([]byte, erro
 		}
 	}
 	return jsonBytes(map[string]any{
-		"schema": "gooo/opentofu-change-contract/replay-receipt/v1",
-		"version": 1,
-		"case_id": evaluation.Case.ID,
-		"replay_runs": 2,
-		"replay_equal": equal,
-		"compared_outputs": files,
-		"output_digests": digests,
-		"decision": evaluation.Decision,
+		"schema":            "gooo/opentofu-change-contract/replay-receipt/v1",
+		"version":           1,
+		"case_id":           evaluation.Case.ID,
+		"replay_runs":       2,
+		"replay_equal":      equal,
+		"compared_outputs":  files,
+		"output_digests":    digests,
+		"decision":          evaluation.Decision,
 		"repository_writes": 0,
 	})
 }
-
 func Render(evaluation Evaluation, schema Schema) (OutputSet, error) {
 	first, err := renderCore(evaluation, schema)
 	if err != nil {
@@ -292,4 +291,3 @@ func reportText(evaluation Evaluation, schema Schema) string {
 	builder.WriteString("\nPrecedence is `REFUTED > UNKNOWN > CLOSED`. UNKNOWN claims preserve exactly `stage`, `step`, `reason`, `unknown_class`, `next_operation`, and `blocked_by`.\n")
 	return builder.String()
 }
-

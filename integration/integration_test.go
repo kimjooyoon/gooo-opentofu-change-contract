@@ -21,4 +21,3 @@ func TestFixtureConsumerIntegration(t *testing.T) {
 		t.Fatalf("unexpected integration result: decision=%s impacts=%d", evaluation.Decision, len(evaluation.Impacts))
 	}
 }
-
