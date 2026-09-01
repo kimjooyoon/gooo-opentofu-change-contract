@@ -27,15 +27,15 @@ func testBundle(t *testing.T) Bundle {
 func TestCanonicalCasesResolveToFixedStates(t *testing.T) {
 	bundle := testBundle(t)
 	want := map[string]string{
-		"mapped-additive": Closed,
-		"mapped-update": Closed,
-		"mapped-delete": Closed,
-		"missing-mapping": Unknown,
-		"stale-plan-schema": Unknown,
-		"ambiguous-address": Unknown,
-		"digest-contradiction": Refuted,
+		"mapped-additive":                Closed,
+		"mapped-update":                  Closed,
+		"mapped-delete":                  Closed,
+		"missing-mapping":                Unknown,
+		"stale-plan-schema":              Unknown,
+		"ambiguous-address":              Unknown,
+		"digest-contradiction":           Refuted,
 		"ignored-destructive-dependency": Refuted,
-		"scope-escalation": Refuted,
+		"scope-escalation":               Refuted,
 	}
 	for caseID, expected := range want {
 		item, err := Evaluate(bundle, caseID)

@@ -67,12 +67,12 @@ type PlanPin struct {
 }
 
 type Plan struct {
-	FormatVersion    string          `json:"format_version"`
-	TerraformVersion string          `json:"terraform_version"`
-	GoooPin          PlanPin         `json:"gooo_pin"`
-	Configuration    Configuration   `json:"configuration"`
+	FormatVersion    string           `json:"format_version"`
+	TerraformVersion string           `json:"terraform_version"`
+	GoooPin          PlanPin          `json:"gooo_pin"`
+	Configuration    Configuration    `json:"configuration"`
 	ResourceChanges  []ResourceChange `json:"resource_changes"`
-	Errored          bool            `json:"errored"`
+	Errored          bool             `json:"errored"`
 }
 
 type Configuration struct {
@@ -184,19 +184,19 @@ type InputLock struct {
 }
 
 type Evaluation struct {
-	Case                  CaseSpec
-	Decision              string
-	Impacts               []ImpactEvent
-	Claims                []UnknownClaim
-	Refutations           []Refutation
-	Mappings              []Mapping
-	Dependencies          map[string][]string
-	TargetResource        string
-	InputDigests          InputDigests
-	ActivityReceipts      []ActivityReceipt
-	CanonicalCaseCounts   map[string]int
-	Plan                  Plan
-	OpenAPI               OpenAPI
+	Case                CaseSpec
+	Decision            string
+	Impacts             []ImpactEvent
+	Claims              []UnknownClaim
+	Refutations         []Refutation
+	Mappings            []Mapping
+	Dependencies        map[string][]string
+	TargetResource      string
+	InputDigests        InputDigests
+	ActivityReceipts    []ActivityReceipt
+	CanonicalCaseCounts map[string]int
+	Plan                Plan
+	OpenAPI             OpenAPI
 }
 
 func (e Evaluation) MarshalPlan() ([]byte, error) {

@@ -153,23 +153,23 @@ func renderCore(evaluation Evaluation, schema Schema) (OutputSet, error) {
 	impact := []byte(impactBuilder.String())
 
 	mapping, err := jsonBytes(map[string]any{
-		"schema": "gooo/opentofu-change-contract/resource-service-map/v1",
-		"version": 1,
-		"scope": "FIXTURE_ONLY",
+		"schema":       "gooo/opentofu-change-contract/resource-service-map/v1",
+		"version":      1,
+		"scope":        "FIXTURE_ONLY",
 		"input_digest": evaluation.InputDigests.MappingSHA256,
-		"explicit": true,
-		"mappings": mappingViews(evaluation.Mappings),
+		"explicit":     true,
+		"mappings":     mappingViews(evaluation.Mappings),
 	})
 	if err != nil {
 		return nil, err
 	}
 	unknown, err := jsonBytes(map[string]any{
-		"schema": "gooo/opentofu-change-contract/unknown-frontier/v1",
-		"version": 1,
-		"decision": evaluation.Decision,
-		"case_id": evaluation.Case.ID,
-		"precedence": []string{Refuted, Unknown, Closed},
-		"active_claims": unknownViews(evaluation.Claims),
+		"schema":                     "gooo/opentofu-change-contract/unknown-frontier/v1",
+		"version":                    1,
+		"decision":                   evaluation.Decision,
+		"case_id":                    evaluation.Case.ID,
+		"precedence":                 []string{Refuted, Unknown, Closed},
+		"active_claims":              unknownViews(evaluation.Claims),
 		"canonical_unknown_case_ids": []string{"missing-mapping", "stale-plan-schema", "ambiguous-address"},
 	})
 	if err != nil {
