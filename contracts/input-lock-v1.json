@@ -1,0 +1,25 @@
+{
+  "schema": "gooo/opentofu-change-contract/input-lock/v1",
+  "version": 1,
+  "authority": "PINNED_FIXTURE_DIGESTS",
+  "plan_path": "fixtures/plan.json",
+  "plan_sha256": "sha256:24432c659fd3ae3807378b0bac0d81624cddf0baaf6e338c5bcbc478f2ceb039",
+  "openapi_path": "fixtures/openapi.json",
+  "openapi_sha256": "sha256:e97538388fc21b154e84a1f73d6dee4011c2d592e7af3cce37c05cdc3f303956",
+  "mapping_path": "fixtures/resource-service-map.json",
+  "mapping_sha256": "sha256:c8e323fdeb4fe4ab66334522ceb14f3b8fd3ff7d7b1d923771e2705309042635",
+  "schema_path": ".gooo/change-contract.gooo",
+  "schema_sha256": "sha256:a60b2023a63e737507840dddfaae0affb7f6833fcd1118955630ad29ffbe2642",
+  "opentofu": {
+    "engine": "OPENTOFU",
+    "plan_json_format_major": 1,
+    "runtime_invocations": 0
+  },
+  "read_only": {
+    "repository_writes": 0,
+    "input_mutations": 0,
+    "provider_network_invocations": 0,
+    "terraform_invocations": 0
+  }
+}
+

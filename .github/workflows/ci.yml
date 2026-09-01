@@ -1,0 +1,76 @@
+name: Change contract CI
+
+on:
+  pull_request: {}
+  push:
+    branches:
+      - main
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    env:
+      SUBJECT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+      EVIDENCE_DIR: /tmp/gooo-opentofu-change-contract-evidence
+    steps:
+      - name: Checkout exact subject
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Use Go 1.27
+        uses: actions/setup-go@v6
+        with:
+          go-version: 1.27.0
+          cache: false
+
+      - name: Verify Go toolchain and formatting
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(go env GOVERSION)" = go1.27.0
+          files=$(gofmt -l $(git ls-files '*.go'))
+          if [ -n "$files" ]; then
+            gofmt -d $files
+            printf '%s\n' "$files"
+            exit 1
+          fi
+
+      - name: Verify static Go analysis
+        run: go vet ./...
+
+      - name: Measure authoritative CI phases and semantic cases
+        shell: bash
+        run: bash scripts/ci-evidence.sh "$EVIDENCE_DIR"
+
+      - name: Verify CI evidence cardinality and successful phases
+        shell: bash
+        run: |
+          set -euo pipefail
+          jq -e '
+            .schema == "gooo/opentofu-change-contract/ci-evidence/v1" and
+            (.measurements|length) == 10 and
+            all(.measurements[]; (.wall_ms|type)=="number" and .wall_ms >= 0 and (.peak_rss_kib|type)=="number" and .peak_rss_kib >= 0 and .exit_code == 0) and
+            .tests == {total:9,selected:9,executed:9,reused:0,failed:0,unknown:0} and
+            .authority.repository_writes == 0 and .authority.cross_project_required_gates == 0
+          ' "$EVIDENCE_DIR/ci-evidence.json" >/dev/null
+          git status --porcelain=v1 --untracked-files=all
+          test -z "$(git status --porcelain=v1 --untracked-files=all)"
+
+      - name: Publish CI evidence summary
+        shell: bash
+        run: |
+          echo '## Deterministic change contract CI' >> "$GITHUB_STEP_SUMMARY"
+          jq -r '"- subject: \(.subject)","- measurements: \(.measurements|length)","- tests: total=\(.tests.total) selected=\(.tests.selected) executed=\(.tests.executed) reused=\(.tests.reused) failed=\(.tests.failed) unknown=\(.tests.unknown)","- repository writes: \(.authority.repository_writes)","- cross-project required gates: \(.authority.cross_project_required_gates)"' "$EVIDENCE_DIR/ci-evidence.json" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload CI evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gooo-opentofu-change-contract-ci-${{ github.run_id }}
+          path: /tmp/gooo-opentofu-change-contract-evidence
+          if-no-files-found: error

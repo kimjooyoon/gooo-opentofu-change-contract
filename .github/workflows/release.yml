@@ -1,0 +1,92 @@
+name: Immutable v0.1.0 release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Annotated tag to publish
+        required: true
+        default: v0.1.0
+        type: string
+      commit:
+        description: Exact main commit targeted by the annotated tag
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RELEASE_TAG: ${{ inputs.tag }}
+      RELEASE_COMMIT: ${{ inputs.commit }}
+      RELEASE_DIR: /tmp/gooo-opentofu-change-contract-release
+    steps:
+      - name: Checkout exact tagged commit
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.tag }}
+          fetch-depth: 0
+
+      - name: Use Go 1.27
+        uses: actions/setup-go@v6
+        with:
+          go-version: 1.27.0
+          cache: false
+
+      - name: Verify exact annotated tag target
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$RELEASE_COMMIT"
+          test "$(git cat-file -t "refs/tags/$RELEASE_TAG")" = tag
+          test "$(git rev-list -n 1 "refs/tags/$RELEASE_TAG^")" = "$RELEASE_COMMIT"
+
+      - name: Generate the seven caller-owned release outputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf "$RELEASE_DIR"
+          mkdir -p "$RELEASE_DIR"
+          go run ./cmd/gooo-change-contract --output "$RELEASE_DIR"
+          test "$(find "$RELEASE_DIR" -type f -maxdepth 1 | wc -l | tr -d ' ')" = 7
+
+      - name: Create draft release
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh release create "$RELEASE_TAG" --draft --verify-tag --title "$RELEASE_TAG" --notes "Immutable deterministic change contract at $RELEASE_COMMIT."
+
+      - name: Upload seven outputs to draft release
+        shell: bash
+        run: |
+          set -euo pipefail
+          for asset in change-contract.json impact-events.ndjson resource-service-map.json unknown-frontier.json decision-receipt.json replay-receipt.json report.md; do
+            gh release upload "$RELEASE_TAG" "$RELEASE_DIR/$asset"
+          done
+
+      - name: Publish release once
+        shell: bash
+        run: gh release edit "$RELEASE_TAG" --draft=false
+
+      - name: Verify public immutable release and every asset digest
+        shell: bash
+        run: |
+          set -euo pipefail
+          release=$(gh api "repos/${GITHUB_REPOSITORY}/releases/tags/$RELEASE_TAG")
+          jq -e --arg tag "$RELEASE_TAG" --arg commit "$RELEASE_COMMIT" '
+            .tag_name == $tag and .draft == false and .prerelease == false and .immutable == true and
+            (.assets|length) == 7
+          ' <<<"$release" >/dev/null
+          test "$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/$RELEASE_TAG" | jq -r '.object.type')" = tag
+          tag_object=$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/$RELEASE_TAG" | jq -r '.object.sha')
+          test "$(gh api "repos/${GITHUB_REPOSITORY}/git/tags/$tag_object" | jq -r '.object.sha')" = "$RELEASE_COMMIT"
+          for asset in change-contract.json impact-events.ndjson resource-service-map.json unknown-frontier.json decision-receipt.json replay-receipt.json report.md; do
+            expected_size=$(wc -c < "$RELEASE_DIR/$asset" | tr -d ' ')
+            expected_digest="sha256:$(sha256sum "$RELEASE_DIR/$asset" | awk '{print $1}')"
+            jq -e --arg name "$asset" --argjson size "$expected_size" --arg digest "$expected_digest" 'any(.assets[]; .name == $name and .size == $size and .digest == $digest)' <<<"$release" >/dev/null
+          done
+          jq -r '"release: tag=\(.tag_name) immutable=\(.immutable) assets=\(.assets|length)"' <<<"$release" >> "$GITHUB_STEP_SUMMARY"

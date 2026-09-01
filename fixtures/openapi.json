@@ -1,0 +1,15 @@
+{
+  "openapi": "3.0.3",
+  "info": {"title": "Checkout API", "version": "2026.09.01"},
+  "x-gooo-pin": {"document_id": "checkout-api-openapi-v1", "scope": "FIXTURE_ONLY"},
+  "paths": {
+    "/v1/orders": {
+      "get": {"operationId": "listOrders", "responses": {"200": {"description": "orders"}}},
+      "post": {"operationId": "createOrder", "responses": {"201": {"description": "created"}}}
+    },
+    "/v1/receipts/{id}": {
+      "get": {"operationId": "downloadReceipt", "responses": {"200": {"description": "receipt"}}}
+    }
+  }
+}
+
