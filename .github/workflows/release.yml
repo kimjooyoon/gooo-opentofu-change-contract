@@ -43,7 +43,7 @@ jobs:
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$RELEASE_COMMIT"
           test "$(git cat-file -t "refs/tags/$RELEASE_TAG")" = tag
-          test "$(git rev-list -n 1 "refs/tags/$RELEASE_TAG^")" = "$RELEASE_COMMIT"
+          test "$(git rev-parse "refs/tags/$RELEASE_TAG^{}")" = "$RELEASE_COMMIT"
 
       - name: Generate the seven caller-owned release outputs
         shell: bash
