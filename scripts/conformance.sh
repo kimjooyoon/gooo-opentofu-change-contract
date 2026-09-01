@@ -14,7 +14,7 @@ git status --porcelain=v1 --untracked-files=all > "$before"
 base="$work/base"
 go run ./cmd/gooo-change-contract --output "$base"
 test "$(find "$base" -type f -maxdepth 1 | wc -l | tr -d ' ')" = 7
-test "$(find "$base" -type f -maxdepth 1 -exec basename {} \; | sort | paste -sd, -)" = "change-contract.json,decision-receipt.json,impact-events.ndjson,report.md,replay-receipt.json,resource-service-map.json,unknown-frontier.json"
+test "$(find "$base" -type f -maxdepth 1 -exec basename {} \; | sort | paste -sd, -)" = "change-contract.json,decision-receipt.json,impact-events.ndjson,replay-receipt.json,report.md,resource-service-map.json,unknown-frontier.json"
 jq -e '
   .schema == "gooo/opentofu-change-contract/change-contract/v1" and
   .decision == "CLOSED" and
@@ -75,4 +75,3 @@ git status --porcelain=v1 --untracked-files=all > "$after"
 cmp -s "$before" "$after"
 
 echo "conformance: CLOSED=3 UNKNOWN=3 REFUTED=3; outputs=7; replay=equal; repository_writes=0"
-
