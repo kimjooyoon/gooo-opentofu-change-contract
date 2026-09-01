@@ -35,7 +35,7 @@ measure compile go test ./... -run '^$' -count=1
 measure build go build -trimpath -o "$work/gooo-change-contract" ./cmd/gooo-change-contract
 measure test go test ./... -count=1
 measure integration go test -tags integration ./integration -count=1
-measure conformance bash scripts/conformance.sh "$work/conformance"
+measure conformance bash -x scripts/conformance.sh "$work/conformance"
 measure evaluator go run ./cmd/gooo-change-contract --case mapped-update --output "$work/evaluator-output"
 measure replay go run ./cmd/gooo-change-contract --output "$work/replay-output"
 measure inventory git ls-files
