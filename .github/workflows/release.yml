@@ -23,7 +23,7 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       RELEASE_TAG: ${{ inputs.tag }}
       RELEASE_COMMIT: ${{ inputs.commit }}
-      RELEASE_DIR: ${{ runner.temp }}/gooo-opentofu-change-contract-release
+      RELEASE_DIR: /tmp/gooo-opentofu-change-contract-release
     steps:
       - name: Checkout exact tagged commit
         uses: actions/checkout@v6
