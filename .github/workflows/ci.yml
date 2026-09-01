@@ -1,28 +1,29 @@
 name: Change contract CI
 
-"on":
-  pull_request:
+on:
+  pull_request: {}
   push:
-    branches: [main]
-  workflow_dispatch:
+    branches:
+      - main
+  workflow_dispatch: {}
 
 permissions:
   contents: read
 
 jobs:
-  change-contract:
+  ci:
     runs-on: ubuntu-latest
     env:
       SUBJECT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
       EVIDENCE_DIR: ${{ runner.temp }}/gooo-opentofu-change-contract-evidence
     steps:
       - name: Checkout exact subject
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Use Go 1.27
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: 1.27.0
           cache: false

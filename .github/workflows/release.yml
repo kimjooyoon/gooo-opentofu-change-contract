@@ -1,6 +1,6 @@
 name: Immutable v0.1.0 release
 
-"on":
+on:
   workflow_dispatch:
     inputs:
       tag:
@@ -26,13 +26,13 @@ jobs:
       RELEASE_DIR: ${{ runner.temp }}/gooo-opentofu-change-contract-release
     steps:
       - name: Checkout exact tagged commit
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ inputs.tag }}
           fetch-depth: 0
 
       - name: Use Go 1.27
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: 1.27.0
           cache: false
