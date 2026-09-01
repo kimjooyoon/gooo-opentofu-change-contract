@@ -33,7 +33,11 @@ jobs:
         run: |
           set -euo pipefail
           test "$(go env GOVERSION)" = go1.27.0
-          test -z "$(gofmt -l $(git ls-files '*.go'))"
+          files=$(gofmt -l $(git ls-files '*.go'))
+          if [ -n "$files" ]; then
+            printf '%s\n' "$files"
+            exit 1
+          fi
 
       - name: Verify static Go analysis
         run: go vet ./...
