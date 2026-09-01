@@ -1,6 +1,6 @@
 name: Immutable v0.1.0 release
 
-on:
+"on":
   workflow_dispatch:
     inputs:
       tag:
@@ -90,4 +90,3 @@ jobs:
             jq -e --arg name "$asset" --argjson size "$expected_size" --arg digest "$expected_digest" 'any(.assets[]; .name == $name and .size == $size and .digest == $digest)' <<<"$release" >/dev/null
           done
           jq -r '"release: tag=\(.tag_name) immutable=\(.immutable) assets=\(.assets|length)"' <<<"$release" >> "$GITHUB_STEP_SUMMARY"
-
